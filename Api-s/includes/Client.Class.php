@@ -25,16 +25,16 @@
             }
         }
 
-        //VERIFICAR SI EL CLIENTE EXISTE
 
-        public static function cliente_existe($nombre_usuario) {
+        /* VERIFICA SI SE ENCUENTRA EL USUARIO*/
+        public static function usuario_existe($correo_electronico, $contraseña) {
             $database = new Database();
             $conn = $database->getConnection();
 
             // Preparar la consulta
-            $stmt = $conn->prepare('SELECT * FROM Usuarios WHERE nombre_usuario = :nombre_usuario LIMIT 1');
-            $stmt->bindParam(':nombre_usuario', $nombre_usuario);
-            
+            $stmt = $conn->prepare('SELECT * FROM usuarios WHERE correo_electronico =:correo_electronico AND contraseña =:password;');
+            $stmt->bindParam(':correo_electronico',$correo_electronico);
+            $stmt->bindParam(':password',$contraseña);
             // Ejecutar la consulta
             $stmt->execute();
 
@@ -48,27 +48,5 @@
                 return false; // Cliente no encontrado
             }
         }
-
-        //CONSULTAR CONTRATO
-
-        public static function consultar_contrato($numero_contrato) {
-            $database = new Database();
-            $conn = $database->getConnection();
-            
-            // Preparar la consulta para buscar el contrato
-            $stmt = $conn->prepare('SELECT * FROM contratos WHERE num_contrato = :numero_contrato');
-            $stmt->bindParam(':numero_contrato', $numero_contrato);
-            $stmt->execute();
-    
-            // Verificar si se encontró un contrato
-            $contrato = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-            if ($contrato) {
-                return $contrato; // Devolver los datos del contrato
-            } else {
-                return false; // Contrato no encontrado
-            }
-        }
     }
-    
 ?>
