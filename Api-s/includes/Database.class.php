@@ -2,9 +2,9 @@
 
 // Clase para la conexión a la base de datos
 class Database {
-    private $host = 'fdb1029.awardspace.net'; // Solo el host
-    private $user = '4535717_conectat247bd';  // Usuario de la base de datos
-    private $password = 'Qwerty247+';  // Contraseña de la base de datos
+    private $host = 'localhost'; // Solo el host
+    private $user = 'root';  // Usuario de la base de datos
+    private $password = '?Sandoval01';  // Contraseña de la base de datos
     private $database = '4535717_conectat247bd';  // Nombre de la base de datos
 
     public function getConnection() {
