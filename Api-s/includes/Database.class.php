@@ -4,7 +4,7 @@
 class Database {
     private $host = 'localhost'; // Solo el host
     private $user = 'root';  // Usuario de la base de datos
-    private $password = '?Sandoval01';  // Contraseña de la base de datos
+    private $password = '';  // Contraseña de la base de datos
     private $database = '4535717_conectat247bd';  // Nombre de la base de datos
 
     public function getConnection() {
