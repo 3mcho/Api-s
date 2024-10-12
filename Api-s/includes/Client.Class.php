@@ -3,6 +3,9 @@
 
 
     class Client{
+          /*
+        ------------------FUNCION PARA INSERTAR CLIENTE(AUN NO SE SABE SI SE VA UTILIZAR)------------------------------------
+        */
         public static function insert_client($nombre_completo,$direccion, $localidad,$cp,$telefono,$correo_electronico, $estatus){
             $database = new Database();
             $conn = $database -> getConnection();
