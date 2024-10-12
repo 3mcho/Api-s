@@ -162,5 +162,39 @@
             }
 
         }
+
+        /*
+        ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL CORREO-----------------------------------
+        */
+                // Función para consultar los contratos de un cliente por su correo electrónico
+        public static function consultar_contratos_por_correo($correo_electronico) {
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            // Preparar la consulta para buscar el cliente por correo electrónico
+            $stmt = $conn->prepare('SELECT id_cliente FROM clientes WHERE correo_electronico = :correo_electronico');
+            $stmt->bindParam(':correo_electronico', $correo_electronico);
+            $stmt->execute();
+
+            // Obtener el cliente
+            $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($cliente) {
+                // Si el cliente existe, buscar sus contratos
+                $stmt_contratos = $conn->prepare('SELECT * FROM contratos WHERE id_cliente = :id_cliente');
+                $stmt_contratos->bindParam(':id_cliente', $cliente['id_cliente']);
+                $stmt_contratos->execute();
+
+                $contratos = $stmt_contratos->fetchAll(PDO::FETCH_ASSOC);
+
+                if ($contratos) {
+                    return $contratos; // Devolver los contratos del cliente
+                } else {
+                    return false; // No se encontraron contratos para este cliente
+                }
+            } else {
+                return false; // Cliente no encontrado
+            }
+        }
     }
 ?>
