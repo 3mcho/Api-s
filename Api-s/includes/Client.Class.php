@@ -199,5 +199,50 @@
                 return false; // Cliente no encontrado
             }
         }
+        
+
+        /* 
+        ------------------FUNCION PARA OBTENER LOS DATOS DEL USUARIO DE LA APP POR MEDIO DEL CORREO ELECTRÓNICO-----------------------------------
+        */
+        public static function get_UsersApp_by_email($correo_electronico){
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            // Preparar la consulta para buscar el USUARIO por correo electrónico
+            $stmt = $conn->prepare('SELECT * FROM UsuariosApp WHERE correo_electronico = :correo_electronico');
+            $stmt->bindParam(':correo_electronico', $correo_electronico);
+            $stmt->execute();
+
+            // Obtener el Usuarios
+            $UserApp = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($UserApp) {
+                return $UserApp;
+            } else {
+                return null; // Usuario no encontrado
+            }
+        }
+
+        /* 
+        ------------------FUNCION PARA OBTENER LOS DATOS DEL CLIENTE POR MEDIO DEL ID-----------------------------------
+        */
+        public static function get_Client_by_id($id_cliente){
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            // Preparar la consulta para buscar el Cliente por id
+            $stmt = $conn->prepare('SELECT * FROM Clientes WHERE id_cliente = :id_cliente');
+            $stmt->bindParam(':id_cliente', $id_cliente);
+            $stmt->execute();
+
+            // Obtener el Usuarios
+            $Client = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($Client) {
+                return $Client;
+            } else {
+                return null; // Cliente no encontrado
+            }
+        }
     }
 ?>
