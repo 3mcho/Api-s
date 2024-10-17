@@ -3,32 +3,7 @@
 
 
     class Client{
-          /*
-        ------------------FUNCION PARA INSERTAR CLIENTE(AUN NO SE SABE SI SE VA UTILIZAR)------------------------------------
-        */
-        public static function insert_client($nombre_completo,$direccion, $localidad,$cp,$telefono,$correo_electronico, $estatus){
-            $database = new Database();
-            $conn = $database -> getConnection();
-
-            $stmt = $conn -> prepare('INSERT INTO cliente(nombre_completo,direccion,localidad,cp,telefono,correo_electronico,estatus)
-                VALUES(:nombre_completo,:direccion,:localidad,:cp,:telefono,:correo_electronico,:estatus)');
-            $stmt->bindParam(':nombre_completo',$nombre_completo);
-            $stmt->bindParam(':direccion',$direccion);
-            $stmt->bindParam(':localidad',$localidad);
-            $stmt->bindParam(':cp',$cp);
-            $stmt->bindParam(':telefono',$telefono);
-            $nuevoDato = intval($estatus);
-            $stmt->bindParam(':correo_electronico',$correo_electronico);
-            $stmt->bindParam(':estatus',$nuevoDato);
-
-            if($stmt->execute()){
-                header('HTTP/1.1 201 CLIENTE CREADO');
-            }else{
-                header('HTTP/1.1 204 CLIENTE NO CREADO');
-            }
-        }
-
-
+       
         /* VERIFICA SI SE ENCUENTRA EL USUARIO*/
         public static function usuario_existe($correo_electronico, $contraseña) {
             $database = new Database();
@@ -58,7 +33,6 @@
             }
         }
 
-
         /*
         ------------------FUNCION PARA CREAR LOS USUARIOS------------------------------------
         */
@@ -77,18 +51,6 @@
             $stmt -> bindParam(':password', $password);
             $stmt -> bindParam(':tipo_plan', $tipo_plan);
             
-
-            //Se obtiene el id_cliente mediante el correo electronico
-            $fk_cliente= Client::obtener_fk_cliente($correo_electronico);
-            $stmt -> bindParam(':fk_cliente', $fk_cliente);
-
-
-            //Se llama al metodo el cual devuelve el estatus del cliente
-            $estatus = Client::comprueba_estatus_cliente($fk_cliente);
-            $stmt -> bindParam(':activo', $estatus);
-
-            if( $estatus == 1){
-
                 if($stmt -> execute()){
                 
                     //Mensaje en forma de json
@@ -104,72 +66,12 @@
                     'message' => 'Usuario no creado exitosamente'// Devuelve el ID del nuevo usuario
                     ]);
                 }
-            }else{
-                http_response_code(201);
-                    echo json_encode([
-                    'status' => 'No existe',
-                    'message' => 'El cliente aun no esta dado de alta '// Devuelve el ID del nuevo usuario
-                    ]);
-
-            }
                   
-        }
-
-
-        /*
-        ------------------FUNCION PARA COMPROBAR SI EL USUARIO ESTA DADO DE ALTA MEDIANTE EL ESTATUS------------------------------------
-        */
-        public static function comprueba_estatus_cliente($fk_cliente){
-
-            $database = new Database();
-            $conn = $database -> getConnection();
-            $stmt = $conn -> prepare('SELECT estatus FROM clientes WHERE id_cliente = :fk_cliente');
-
-            
-            $stmt->bindParam(':fk_cliente', $fk_cliente, PDO::PARAM_INT);
-
-            $stmt->execute();
-
-            //VUELVE LA CONSULTA A UN ARRAY
-            $estatus = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($estatus) {
-                //EN CASO DE SER VERDADERO 
-                return $estatus['estatus']; 
-                // Retorna el valor de la columna 'estatus'
-            } else {
-                //EN CASO DE SER FALSO
-                return null; // Retorna null si no se encuentra el cliente
-            }
-
-
-        }
-
-        /*
-        ------------------FUNCION PARA OBTENER EL ID DEL CLIENTE MEDIANTE EL CORREO ELECTRONICO REGISTRADO-----------------------------------
-        */
-        public static function obtener_fk_cliente($correo_electronico){
-            $database = new Database();
-            $conn = $database -> getConnection();
-            $stmt = $conn -> prepare('SELECT id_cliente FROM clientes WHERE correo_electronico = :correo_electronico' );
-
-            $stmt -> bindParam(':correo_electronico', $correo_electronico, PDO::PARAM_INT);
-            $stmt -> execute();
-
-            $fk_cliente = $stmt -> fetch(PDO::FETCH_ASSOC);
-
-            if($fk_cliente !== 0 ){
-                return $fk_cliente['id_cliente'];
-            }else{
-                return null;
-            }
-
         }
 
         /*
         ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL CORREO-----------------------------------
         */
-                // Función para consultar los contratos de un cliente por su correo electrónico
         public static function consultar_contratos_por_correo($correo_electronico) {
             $database = new Database();
             $conn = $database->getConnection();
@@ -200,28 +102,6 @@
             }
         }
         
-
-        /* 
-        ------------------FUNCION PARA OBTENER LOS DATOS DEL USUARIO DE LA APP POR MEDIO DEL CORREO ELECTRÓNICO-----------------------------------
-        */
-        public static function get_UsersApp_by_email($correo_electronico){
-            $database = new Database();
-            $conn = $database->getConnection();
-
-            // Preparar la consulta para buscar el USUARIO por correo electrónico
-            $stmt = $conn->prepare('SELECT * FROM UsuariosApp WHERE correo_electronico = :correo_electronico');
-            $stmt->bindParam(':correo_electronico', $correo_electronico);
-            $stmt->execute();
-
-            // Obtener el Usuarios
-            $UserApp = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($UserApp) {
-                return $UserApp;
-            } else {
-                return null; // Usuario no encontrado
-            }
-        }
 
         /* 
         ------------------FUNCION PARA OBTENER LOS DATOS DEL CLIENTE POR MEDIO DEL ID-----------------------------------
