@@ -4,34 +4,45 @@
 
     class Client{
        
-        /* VERIFICA SI SE ENCUENTRA EL USUARIO*/
-        public static function usuario_existe($correo_electronico, $contraseña) {
+        public static function usuario_existe($correo_electronico) {
             $database = new Database();
             $conn = $database->getConnection();
-
-            // Preparar la consulta
-            $stmt = $conn->prepare('SELECT * FROM usuarios WHERE correo_electronico =:correo_electronico AND contraseña =:password;');
-            $stmt->bindParam(':correo_electronico',$correo_electronico);
-            $stmt->bindParam(':password',$contraseña);
+        
+            // Preparar la consulta, seleccionando solo la clave foránea (fk_cliente) y otros campos
+            $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM usuariosapp WHERE correo_electronico = :correo_electronico');
+            $stmt->bindParam(':correo_electronico', $correo_electronico);
+            
             // Ejecutar la consulta
             $stmt->execute();
-
+        
             // Verificar si el cliente existe
             if ($stmt->rowCount() > 0) {
+                // Obtener el resultado
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $nombre_usuario = $row['nombre_usuario'];
+                $alias = $row['alias'];
+                $password = $row['password'];
+                $fk_cliente = $row['fk_cliente'];
+        
+                // Devolver la clave foránea y otros datos en la respuesta JSON
                 echo json_encode([
-                    'status' => 'Completado',
-                    'message' => 'El cliente si existe '// Devuelve el ID del nuevo usuario
-                    ]);
-                return true; // Cliente encontrado
-                
-            } else {
+                    'nombre_usuario' => $nombre_usuario,
+                    'alias' => $alias,
+                    'password' => $password,
+                    'fk_cliente' => $fk_cliente
+                ]);
+                return true; 
+            } 
+            else 
+            {
                 echo json_encode([
                     'status' => 'Incompleto',
-                    'message' => 'No se encuentra el usuario '// Devuelve el ID del nuevo usuario
-                    ]);
+                    'message' => 'No se encuentra el usuario'
+                ]);
                 return false; // Cliente no encontrado
             }
         }
+        
 
         /*
         ------------------FUNCION PARA CREAR LOS USUARIOS------------------------------------
