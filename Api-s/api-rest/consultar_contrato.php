@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
     if ($contratos_data) {
         // Devolver los datos de los contratos en formato JSON
         header('HTTP/1.1 200 OK');
+        header('Content-Type: application/json');
         echo json_encode($contratos_data);
     } else {
         // Si no se encuentran contratos, devolver un mensaje de error
