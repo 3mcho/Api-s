@@ -47,34 +47,37 @@
         /*
         ------------------FUNCION PARA CREAR LOS USUARIOS------------------------------------
         */
-        public static function crear_usuario($nombre_usuario, $correo_electronico, $password, $tipo_plan, $activo){
+        public static function crear_usuario($nombre_usuario, $alias, $correo_electronico, $password, $activo, $fk_cliente){
 
             $database = new Database();
             $conn = $database -> getConnection();
             
 
             //CONSULTA PARA AGREGAR USUARIO
-            $stmt = $conn -> prepare('INSERT INTO usuarios(nombre_usuario,correo_electronico, contraseña, tipo_plan, activo, fk_cliente) 
-            VALUES(:nombre_usuario, :correo_electronico, :password, :tipo_plan, :activo, :fk_cliente )');
+            $stmt = $conn -> prepare('INSERT INTO UsuariosApp(nombre_usuario,alias ,correo_electronico, password, activo, fk_cliente) 
+            VALUES(:nombre_usuario,:alias , :correo_electronico, :password, :activo, :fk_cliente )');
 
             $stmt -> bindParam(':nombre_usuario', $nombre_usuario);
+            $stmt -> bindParam(':alias', $alias);
             $stmt -> bindParam(':correo_electronico', $correo_electronico);
             $stmt -> bindParam(':password', $password);
-            $stmt -> bindParam(':tipo_plan', $tipo_plan);
+            $stmt -> bindParam(':activo', $activo);
+            $stmt -> bindParam(':fk_cliente', $fk_cliente);
             
                 if($stmt -> execute()){
-                
                     //Mensaje en forma de json
                     http_response_code(201);
+                    header('Content-Type: application/json');
                     echo json_encode([
-                    'status' => 'completado',
-                    'message' => 'Usuario creado exitosamente'// Devuelve el ID del nuevo usuario
+                    'message' => 'CORRECTO:',
+                    'status' => 'B4C5'
                     ]);
                 }else{
                     http_response_code(400);
+                    header('Content-Type: application/json');
                     echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Usuario no creado exitosamente'// Devuelve el ID del nuevo usuario
+                    'message' => 'ERROR:',
+                    'status' => 'D204'
                     ]);
                 }
                   
