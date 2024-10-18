@@ -36,8 +36,8 @@
             else 
             {
                 echo json_encode([
-                    'status' => 'Incompleto',
-                    'message' => 'No se encuentra el usuario'
+                    'message' => 'Error',
+                    'status' => 'A102'
                 ]);
                 return false; // Cliente no encontrado
             }
