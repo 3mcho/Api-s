@@ -127,5 +127,51 @@
                 return null; // Cliente no encontrado
             }
         }
+
+        //Validacion de cliente en la tabla UsuariosApp
+        public static function client_validation_in_usuarios_app($id_cliente, $email)
+        {
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            // Preparar la consulta para buscar el Cliente por el ID o el EMAIL
+            $stmt = $conn->prepare('SELECT * FROM UsuariosApp WHERE fk_cliente = :id_cliente or correo_electronico = :email');
+            $stmt->bindParam(':id_cliente', $id_cliente);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result)
+            {
+                return "E001";
+            }
+            else 
+            {
+                return "A102";
+            }
+        }
+
+        //Validacion de cliente en la tabla Clientes
+        public static function client_validation_in_clientes($id_cliente, $email)
+        {
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            // Preparar la consulta para buscar el Cliente por el ID o el EMAIL
+            $stmt = $conn->prepare('SELECT * FROM Clientes WHERE id_cliente = :id_cliente or correo_electronico = :email');
+            $stmt->bindParam(':id_cliente', $id_cliente);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result)
+            {
+                return "E001";
+            }
+            else 
+            {
+                return "A102";
+            }
+        }
     }
 ?>
