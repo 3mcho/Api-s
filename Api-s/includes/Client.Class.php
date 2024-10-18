@@ -9,7 +9,7 @@
             $conn = $database->getConnection();
         
             // Preparar la consulta, seleccionando solo la clave foránea (fk_cliente) y otros campos
-            $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM usuariosapp WHERE correo_electronico = :correo_electronico');
+            $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM UsuariosApp WHERE correo_electronico = :correo_electronico');
             $stmt->bindParam(':correo_electronico', $correo_electronico);
             
             // Ejecutar la consulta
@@ -92,7 +92,7 @@
             $conn = $database->getConnection();
 
             // Preparar la consulta para buscar los contratos por ID del cliente
-            $stmt_contratos = $conn->prepare('SELECT * FROM contratos WHERE id_cliente = :id_cliente');
+            $stmt_contratos = $conn->prepare('SELECT * FROM Contratos WHERE id_cliente = :id_cliente');
             $stmt_contratos->bindParam(':id_cliente', $id_cliente);
             $stmt_contratos->execute();
 
