@@ -1,9 +1,6 @@
 <?php
 require_once('../includes/Client.class.php');
 
-<?php
-require_once('../includes/Client.class.php');
-
 // Verificar si el método es GET y si el ID del cliente se ha proporcionado en la URL
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id_cliente'])) {
     $id_cliente = $_GET['id_cliente'];
