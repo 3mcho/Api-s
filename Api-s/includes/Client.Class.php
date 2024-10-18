@@ -4,34 +4,45 @@
 
     class Client{
        
-        /* VERIFICA SI SE ENCUENTRA EL USUARIO*/
-        public static function usuario_existe($correo_electronico, $contraseña) {
+        public static function usuario_existe($correo_electronico) {
             $database = new Database();
             $conn = $database->getConnection();
-
-            // Preparar la consulta
-            $stmt = $conn->prepare('SELECT * FROM usuarios WHERE correo_electronico =:correo_electronico AND contraseña =:password;');
-            $stmt->bindParam(':correo_electronico',$correo_electronico);
-            $stmt->bindParam(':password',$contraseña);
+        
+            // Preparar la consulta, seleccionando solo la clave foránea (fk_cliente) y otros campos
+            $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM usuariosapp WHERE correo_electronico = :correo_electronico');
+            $stmt->bindParam(':correo_electronico', $correo_electronico);
+            
             // Ejecutar la consulta
             $stmt->execute();
-
+        
             // Verificar si el cliente existe
             if ($stmt->rowCount() > 0) {
+                // Obtener el resultado
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $nombre_usuario = $row['nombre_usuario'];
+                $alias = $row['alias'];
+                $password = $row['password'];
+                $fk_cliente = $row['fk_cliente'];
+        
+                // Devolver la clave foránea y otros datos en la respuesta JSON
                 echo json_encode([
-                    'status' => 'Completado',
-                    'message' => 'El cliente si existe '// Devuelve el ID del nuevo usuario
-                    ]);
-                return true; // Cliente encontrado
-                
-            } else {
+                    'nombre_usuario' => $nombre_usuario,
+                    'alias' => $alias,
+                    'password' => $password,
+                    'fk_cliente' => $fk_cliente
+                ]);
+                return true; 
+            } 
+            else 
+            {
                 echo json_encode([
                     'status' => 'Incompleto',
-                    'message' => 'No se encuentra el usuario '// Devuelve el ID del nuevo usuario
-                    ]);
+                    'message' => 'No se encuentra el usuario'
+                ]);
                 return false; // Cliente no encontrado
             }
         }
+        
 
         /*
         ------------------FUNCION PARA CREAR LOS USUARIOS------------------------------------
@@ -70,35 +81,24 @@
         }
 
         /*
-        ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL CORREO-----------------------------------
+        ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL ID-----------------------------------
         */
-        public static function consultar_contratos_por_correo($correo_electronico) {
+        // Función para consultar los contratos de un cliente por su ID
+        public static function consultar_contratos_por_id($id_cliente) {
             $database = new Database();
             $conn = $database->getConnection();
 
-            // Preparar la consulta para buscar el cliente por correo electrónico
-            $stmt = $conn->prepare('SELECT id_cliente FROM clientes WHERE correo_electronico = :correo_electronico');
-            $stmt->bindParam(':correo_electronico', $correo_electronico);
-            $stmt->execute();
+            // Preparar la consulta para buscar los contratos por ID del cliente
+            $stmt_contratos = $conn->prepare('SELECT * FROM contratos WHERE id_cliente = :id_cliente');
+            $stmt_contratos->bindParam(':id_cliente', $id_cliente);
+            $stmt_contratos->execute();
 
-            // Obtener el cliente
-            $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+            $contratos = $stmt_contratos->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($cliente) {
-                // Si el cliente existe, buscar sus contratos
-                $stmt_contratos = $conn->prepare('SELECT * FROM contratos WHERE id_cliente = :id_cliente');
-                $stmt_contratos->bindParam(':id_cliente', $cliente['id_cliente']);
-                $stmt_contratos->execute();
-
-                $contratos = $stmt_contratos->fetchAll(PDO::FETCH_ASSOC);
-
-                if ($contratos) {
-                    return $contratos; // Devolver los contratos del cliente
-                } else {
-                    return false; // No se encontraron contratos para este cliente
-                }
+            if ($contratos) {
+                return $contratos; // Devolver los contratos del cliente
             } else {
-                return false; // Cliente no encontrado
+                return false; // No se encontraron contratos para este cliente
             }
         }
         
