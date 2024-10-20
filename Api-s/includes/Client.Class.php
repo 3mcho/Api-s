@@ -8,10 +8,10 @@
             $database = new Database();
             $conn = $database->getConnection();
         
-            // Preparar la consulta, seleccionando solo la clave foránea (fk_cliente) y otros campos
+            // Preparar la consulta
             $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM UsuariosApp WHERE correo_electronico = :correo_electronico');
             $stmt->bindParam(':correo_electronico', $correo_electronico);
-            
+        
             // Ejecutar la consulta
             $stmt->execute();
         
@@ -19,26 +19,15 @@
             if ($stmt->rowCount() > 0) {
                 // Obtener el resultado
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $nombre_usuario = $row['nombre_usuario'];
-                $alias = $row['alias'];
-                $password = $row['password'];
-                $fk_cliente = $row['fk_cliente'];
-        
-                // Devolver la clave foránea y otros datos en la respuesta JSON
-                echo json_encode([
-                    'nombre_usuario' => $nombre_usuario,
-                    'alias' => $alias,
-                    'password' => $password,
-                    'fk_cliente' => $fk_cliente
-                ]);
-                return true; 
+                return [
+                    'nombre_usuario' => $row['nombre_usuario'],
+                    'alias' => $row['alias'],
+                    'password' => $row['password'],
+                    'fk_cliente' => $row['fk_cliente']
+                ]; 
             } 
             else 
             {
-                echo json_encode([
-                    'message' => 'Error',
-                    'status' => 'A102'
-                ]);
                 return false; // Cliente no encontrado
             }
         }
