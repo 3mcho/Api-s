@@ -81,7 +81,7 @@
             $conn = $database->getConnection();
 
             // Preparar la consulta para buscar los contratos por ID del cliente
-            $stmt_contratos = $conn->prepare('SELECT * FROM Contratos WHERE id_cliente = :id_cliente');
+            $stmt_contratos = $conn->prepare('SELECT * FROM contratos WHERE fk_cliente = :id_cliente');
             $stmt_contratos->bindParam(':id_cliente', $id_cliente);
             $stmt_contratos->execute();
 
