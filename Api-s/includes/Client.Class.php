@@ -127,5 +127,31 @@
                 return null; // Cliente no encontrado
             }
         }
+
+        /* 
+        ------------------FUNCION PARA OBTENER LOS DATOS DEL CLIENTE POR MEDIO DEL CORREO-----------------------------------
+        */
+
+        public static function get_client_by_email($email) {
+            $database = new Database();
+            $conn = $database->getConnection();
+    
+            $stmt = $conn->prepare('SELECT * FROM cliente WHERE correo_electronico = :email');
+            $stmt->bindParam(':email', $email);
+    
+            if ($stmt->execute()) {
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($result) {
+                    header('Content-Type: application/json');
+                    echo json_encode($result);
+                } else {
+                    
+                    echo json_encode(['message' => 'Cliente no encontrado']);
+                }
+            } else {
+                
+                echo json_encode(['message' => 'Error en la consulta']);
+            }
+        }
     }
 ?>
