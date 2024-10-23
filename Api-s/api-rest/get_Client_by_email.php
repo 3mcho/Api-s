@@ -1,5 +1,5 @@
 <?php
-require_once('Client.php');
+require_once('../includes/Client.Class.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['email'])) {
