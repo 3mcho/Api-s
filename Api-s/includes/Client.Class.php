@@ -25,12 +25,33 @@
                     'password' => $row['password'],
                     'fk_cliente' => $row['fk_cliente']
                 ]; 
-            } else {
+            } 
+            else 
+            {
                 return false; // Cliente no encontrado
             }
         }
         
+        public static function usuario_direcciones($clientId) {
+            $database = new Database();
+            $conn = $database->getConnection();
         
+            // Consulta para obtener todas las direcciones asociadas al cliente
+            $query = "SELECT * FROM direcciones WHERE fk_cliente = :clientId";
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(':clientId', $clientId, PDO::PARAM_INT);
+            $stmt->execute();
+        
+            // Obtener todas las direcciones asociadas
+            $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+            // Verificar si se encontraron direcciones
+            if ($addresses) {
+                return $addresses;
+            } else {
+                return null; // Si no hay direcciones para este cliente
+            }
+        }
 
         /*
         ------------------FUNCION PARA CREAR LOS USUARIOS------------------------------------

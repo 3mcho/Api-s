@@ -1,20 +1,19 @@
 <?php 
 require_once('../includes/Client.Class.php');
 
-// Definir la cabecera antes de cualquier salida
-header('Content-Type: application/json');
+header('Content-Type: application/json'); // Mover la cabecera antes de cualquier salida
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
 
     $correo_electronico = $_GET['correo_electronico'];
-    $usuario = Client::usuario_existe($correo_electronico);
+    $comprobar = Client::usuario_existe($correo_electronico);
 
-    // Verificar si el usuario existe
-    if ($usuario !== false) {
-        // Devolver los datos del usuario como JSON
-        echo json_encode($usuario);
+    // Verificar si el cliente ya existe
+    if ($comprobar) {
+        // Devolver los datos como JSON
+        echo json_encode($comprobar);
     } else {
-        // Devolver un mensaje de error si el usuario no existe, pero solo una vez
+        // Devolver un error si no existe el usuario
         echo json_encode(['message' => 'Error', 'status' => 'A102']);
     }
 } else {
