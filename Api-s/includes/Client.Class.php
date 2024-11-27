@@ -9,7 +9,7 @@
             $conn = $database->getConnection();
         
             // Preparar la consulta
-            $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM UsuariosApp WHERE correo_electronico = :correo_electronico');
+            $stmt = $conn->prepare('SELECT nombre_usuario, alias, password, fk_cliente FROM usuarios_app WHERE correo_electronico = :correo_electronico');
             $stmt->bindParam(':correo_electronico', $correo_electronico);
         
             // Ejecutar la consulta
@@ -42,7 +42,7 @@
             
 
             //CONSULTA PARA AGREGAR USUARIO
-            $stmt = $conn -> prepare('INSERT INTO UsuariosApp(nombre_usuario,alias ,correo_electronico, password, activo, fk_cliente) 
+            $stmt = $conn -> prepare('INSERT INTO usuarios_app(nombre_usuario,alias ,correo_electronico, password, activo, fk_cliente) 
             VALUES(:nombre_usuario,:alias , :correo_electronico, :password, :activo, :fk_cliente )');
 
             $stmt -> bindParam(':nombre_usuario', $nombre_usuario);
@@ -102,7 +102,7 @@
             $conn = $database->getConnection();
 
             // Preparar la consulta para buscar el Cliente por id
-            $stmt = $conn->prepare('SELECT * FROM Clientes WHERE id_cliente = :id_cliente');
+            $stmt = $conn->prepare('SELECT * FROM clientes WHERE id_cliente = :id_cliente');
             $stmt->bindParam(':id_cliente', $id_cliente);
             $stmt->execute();
 
@@ -123,7 +123,7 @@
             $conn = $database->getConnection();
 
             // Preparar la consulta para buscar el Cliente por el ID o el EMAIL
-            $stmt = $conn->prepare('SELECT * FROM UsuariosApp WHERE fk_cliente = :id_cliente or correo_electronico = :email');
+            $stmt = $conn->prepare('SELECT * FROM usuarios_app WHERE fk_cliente = :id_cliente or correo_electronico = :email');
             $stmt->bindParam(':id_cliente', $id_cliente);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
@@ -146,7 +146,7 @@
             $conn = $database->getConnection();
 
             // Preparar la consulta para buscar el Cliente por el ID o el EMAIL
-            $stmt = $conn->prepare('SELECT * FROM Clientes WHERE id_cliente = :id_cliente or correo_electronico = :email');
+            $stmt = $conn->prepare('SELECT * FROM clientes WHERE id_cliente = :id_cliente or correo_electronico = :email');
             $stmt->bindParam(':id_cliente', $id_cliente);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
@@ -169,7 +169,7 @@
             $database = new Database();
             $conn = $database->getConnection();
     
-            $stmt = $conn->prepare('SELECT * FROM cliente WHERE correo_electronico = :email');
+            $stmt = $conn->prepare('SELECT * FROM clientes WHERE correo_electronico = :email');
             $stmt->bindParam(':email', $email);
     
             if ($stmt->execute()) {
@@ -188,16 +188,18 @@
             }
         }
 
+         /* 
+        ------------------FUNCION PARA ACTUALIZAR ALIAS Y PASSWORD (AUTOR: MOISES)-----------------------------------
+        */
+
         public static function updateUsuariosApp($email, $newAlias, $newPassword){
             $database = new Database();
             $conn = $database -> getConnection();
-
             $stmt = $conn->prepare('UPDATE usuarios_app SET alias = :newAlias, password= :newPassword WHERE correo_electronico = :email');
             $stmt->bindParam(':newAlias', $newAlias);
             $stmt->bindParam(':newPassword', $newPassword);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result)
             {
@@ -208,5 +210,6 @@
                 return "A102";
             }
         }
+    
     }
 ?>
