@@ -21,3 +21,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
     echo json_encode(['message' => 'Faltan parametros necesarios.']);
 }
 ?>
+
