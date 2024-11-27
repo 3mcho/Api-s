@@ -128,8 +128,5 @@
             }
         }
 
-        /* 
-        ------------------FUNCION PARA OBTENER LOS DATOS DEL CLIENTE POR MEDIO DEL CORREO-----------------------------------
-        */
     }
 ?>
