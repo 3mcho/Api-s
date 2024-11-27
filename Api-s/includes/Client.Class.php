@@ -188,5 +188,26 @@
                 echo json_encode(['message' => 'Error en la consulta']);
             }
         }
+
+        public static function updateUsuariosApp($email, $newAlias, $newPassword){
+            $database = new Database();
+            $conn = $database -> getConnection();
+
+            $stmt = $conn->prepare('UPDATE usuarios_app SET alias = :newAlias, password= :newPassword WHERE correo_electronico = :email');
+            $stmt->bindParam(':newAlias', $newAlias);
+            $stmt->bindParam(':newPassword', $newPassword);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result)
+            {
+                return "E001";
+            }
+            else 
+            {
+                return "A102";
+            }
+        }
     }
 ?>
