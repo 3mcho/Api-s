@@ -1,19 +1,20 @@
 <?php 
 require_once('../includes/Client.Class.php');
 
-header('Content-Type: application/json'); // Mover la cabecera antes de cualquier salida
+// Definir la cabecera antes de cualquier salida
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
 
     $correo_electronico = $_GET['correo_electronico'];
-    $comprobar = Client::usuario_existe($correo_electronico);
+    $usuario = Client::usuario_existe($correo_electronico);
 
-    // Verificar si el cliente ya existe
-    if ($comprobar) {
-        // Devolver los datos como JSON
-        echo json_encode($comprobar);
+    // Verificar si el usuario existe
+    if ($usuario !== false) {
+        // Devolver los datos del usuario como JSON
+        echo json_encode($usuario);
     } else {
-        // Devolver un error si no existe el usuario
+        // Devolver un mensaje de error si el usuario no existe, pero solo una vez
         echo json_encode(['message' => 'Error', 'status' => 'A102']);
     }
 } else {
@@ -21,3 +22,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
     echo json_encode(['message' => 'Faltan parametros necesarios.']);
 }
 ?>
+

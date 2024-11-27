@@ -25,12 +25,11 @@
                     'password' => $row['password'],
                     'fk_cliente' => $row['fk_cliente']
                 ]; 
-            } 
-            else 
-            {
+            } else {
                 return false; // Cliente no encontrado
             }
         }
+        
         
 
         /*
