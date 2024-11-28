@@ -47,6 +47,10 @@
         
             // Verificar si se encontraron direcciones
             if ($addresses) {
+                // Eliminar el campo 'fk_cliente' de cada dirección
+                foreach ($addresses as &$address) {
+                    unset($address['fk_cliente']);
+                }
                 return $addresses;
             } else {
                 return null; // Si no hay direcciones para este cliente
