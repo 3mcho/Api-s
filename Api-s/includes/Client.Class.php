@@ -103,18 +103,43 @@
         public static function consultar_contratos_por_id($id_cliente) {
             $database = new Database();
             $conn = $database->getConnection();
-
-            // Preparar la consulta para buscar los contratos por ID del cliente
-            $stmt_contratos = $conn->prepare('SELECT * FROM contratos WHERE fk_cliente = :id_cliente');
-            $stmt_contratos->bindParam(':id_cliente', $id_cliente);
-            $stmt_contratos->execute();
-
-            $contratos = $stmt_contratos->fetchAll(PDO::FETCH_ASSOC);
-
-            if ($contratos) {
-                return $contratos; // Devolver los contratos del cliente
-            } else {
-                return false; // No se encontraron contratos para este cliente
+        
+            try {
+                // Consulta adaptada a la nueva base de datos
+                $sql = "
+                    SELECT 
+                        c.id_contrato,
+                        c.fecha_inicio_contrato,
+                        c.fecha_fin_contrato,
+                        c.total_meses_contrato,
+                        c.estado,
+                        c.monto_total_contrato,
+                        c.monto_total_mensualidad,
+                        p.id_precontrato,
+                        np.nombre_paquete,
+                        np.precio,
+                        np.caracteristicas_paquete,
+                        np.velocidad_paquete
+                    FROM contratos c
+                    INNER JOIN precontratos p ON c.fk_precontrato = p.id_precontrato
+                    INNER JOIN nombres_paquetes np ON p.fk_paquete = np.id_nombre_paquete
+                    WHERE p.fk_cliente = :id_cliente;
+                ";
+        
+                // Preparar y ejecutar la consulta
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+                $stmt->execute();
+        
+                // Recuperar los resultados
+                $contratos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                // Retornar los resultados o false si no hay contratos
+                return $contratos ?: false;
+        
+            } catch (PDOException $e) {
+                // Manejo de errores en caso de problemas con la consulta
+                throw new Exception("Error al consultar los contratos: " . $e->getMessage());
             }
         }
         
