@@ -1,5 +1,5 @@
 <?php
-require_once('../includes/Client.class.php');
+require_once('../includes/Client.Class.php');
 
 header('Content-Type: application/json');
 
