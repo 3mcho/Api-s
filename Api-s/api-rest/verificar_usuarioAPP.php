@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
     }
 } else {
     // Si faltan parámetros
-    echo json_encode(['message' => 'Faltan parametros necesarios.']);
+    echo json_encode(['message' => 'Faltan parametros necesarios.']);  
 }
 ?>
 
