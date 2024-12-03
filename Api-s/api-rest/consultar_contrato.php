@@ -1,26 +1,40 @@
 <?php
-require_once('../includes/Client.class.php');
+require_once('../includes/Client.Class.php');
 
-// Verificar si el método es GET y si el correo electrónico se ha proporcionado en la URL
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['correo_electronico'])) {
-    $correo_electronico = $_GET['correo_electronico'];
+header('Content-Type: application/json');
 
-    // Llamar a la función para consultar los contratos por correo electrónico
-    $contratos_data = Client::consultar_contratos_por_correo($correo_electronico);
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id_cliente'])) {
+    $id_cliente = $_GET['id_cliente'];
 
-    if ($contratos_data) {
-        // Devolver los datos de los contratos en formato JSON
-        header('HTTP/1.1 200 OK');
-        header('Content-Type: application/json');
-        echo json_encode($contratos_data);
-    } else {
-        // Si no se encuentran contratos, devolver un mensaje de error
-        header('HTTP/1.1 404 Not Found');
-        echo json_encode(array("message" => "No se encontraron contratos para el correo proporcionado."));
+    try {
+        // Llamar a la función para consultar los contratos por ID del cliente
+        $contratos_data = Client::consultar_contratos_por_id($id_cliente);
+
+        if ($contratos_data) {
+            // Contratos encontrados: retornar datos en formato JSON
+            echo json_encode([
+                'status' => 'E001', // Código de éxito
+                'data' => $contratos_data
+            ]);
+        } else {
+            // No se encontraron contratos para el cliente
+            echo json_encode([
+                'status' => 'A102', // Código de error
+                'message' => 'No se encontraron contratos para el cliente con ID ' . $id_cliente
+            ]);
+        }
+    } catch (Exception $e) {
+        // Manejo de errores inesperados
+        echo json_encode([
+            'status' => 'E500', // Código de error interno
+            'message' => 'Ocurrió un error al procesar la solicitud: ' . $e->getMessage()
+        ]);
     }
 } else {
-    // Si no se proporcionó el correo electrónico o el método no es GET
-    header('HTTP/1.1 400 Bad Request');
-    echo json_encode(array("message" => "Correo electrónico no proporcionado o método no permitido."));
+    // Método no permitido o falta de parámetros
+    echo json_encode([
+        'status' => 'A400', // Código de error por solicitud incorrecta
+        'message' => 'Falta el parámetro "id_cliente" o método HTTP incorrecto.'
+    ]);
 }
 ?>
