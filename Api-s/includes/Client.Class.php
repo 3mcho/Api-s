@@ -369,11 +369,15 @@
             throw new Exception("Error al consultar las preguntas frecuentes: " . $e->getMessage());
         }
 
+        
+        
+    }   
+
         /*
         ------------------FUNCIÓN PARA OBTENER LOS PAGOS POR fk_contrato------------------
          */
-        public static function consultar_pago_por_fk_contrato($fk_contrato)
-        {
+        public static function consultar_pago_por_fk_contrato($fk_contrato){
+
             $database = new Database();
             $conn = $database->getConnection();
 
@@ -401,7 +405,35 @@
             }
 
         }
+
+        public static function get_questions_and_category_by_id($id_categoria) {
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            $stmt = $conn->prepare('
+                SELECT 
+                    f.id_pregunta, f.pregunta, f.respuesta_pregunta
+                FROM faq_preguntas f
+                INNER JOIN faq_categorias c ON f.fk_categoria = c.id_categoria
+                WHERE f.fk_categoria = :id_categoria
+            ');
+            $stmt->bindParam(':id_categoria', $id_categoria);
         
-    }   
+            if ($stmt->execute()) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if ($result) {
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 200 OK');
+                    echo json_encode($result); 
+                } else {
+                    header('HTTP/1.1 404 No se encontraron preguntas');
+                    echo json_encode(['message' => 'No se encontraron preguntas para esta categoría']);
+                }
+            } else {
+                header('HTTP/1.1 500 Error en la consulta');
+                echo json_encode(['message' => 'Error en la consulta']);
+            }
+        }
+
 }
 ?>
