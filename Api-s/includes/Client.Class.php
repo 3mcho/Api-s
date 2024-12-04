@@ -338,7 +338,7 @@
         ------------------FUNCION PARA CONSULTAR LAS PREGUNTAS FRECUENTES POR CATEGORIA POR MEDIO DEL ID_CATEGORIA------------------------------------
         */
       
-    public static function consultar_faq_por_categoria($id_categoria) {
+        public static function consultar_faq_por_categoria($id_categoria) {
         $database = new Database();
         $conn = $database->getConnection();
 
@@ -368,7 +368,40 @@
             
             throw new Exception("Error al consultar las preguntas frecuentes: " . $e->getMessage());
         }
-    }
-    
-    }
+
+        /*
+        ------------------FUNCIÓN PARA OBTENER LOS PAGOS POR fk_contrato------------------
+         */
+        public static function consultar_pago_por_fk_contrato($fk_contrato)
+        {
+            $database = new Database();
+            $conn = $database->getConnection();
+
+            try 
+            {
+                // Consulta para obtener pagos relacionados con el contrato
+                $sql = "SELECT * FROM pagos WHERE fk_contrato = :fk_contrato";
+
+                // Preparar y ejecutar la consulta
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':fk_contrato', $fk_contrato, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Recuperar los resultados
+                $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Retornar los resultados o false si no hay pagos
+                return $pagos ?: false;
+
+            } 
+            catch (PDOException $e) 
+            {
+                // Manejo de errores en caso de problemas con la consulta
+                throw new Exception("Error al consultar los pagos: " . $e->getMessage());
+            }
+
+        }
+        
+    }   
+}
 ?>
