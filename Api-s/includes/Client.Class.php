@@ -266,6 +266,44 @@
                 return "A102";
             }
         }
+
+        /* 
+        ------------------FUNCION PARA LEVANTAR TICKET-----------------------------------
+        */
+        public static function lev_ticket($folio,$fk_contrato,$status,$fecha_reporte,$problema){
+            try {
+                $database = new Database();
+                $conn = $database->getConnection();
+        
+                $stmt = $conn->prepare('INSERT INTO tickets (folio, fk_contrato, status, fecha_reporte, problema) 
+                                        VALUES (:folio, :fk_contrato, :status, :fecha_reporte, :problema)');
+        
+                $stmt->bindParam(':folio', $folio, PDO::PARAM_STR);
+                $stmt->bindParam(':fk_contrato', $fk_contrato, PDO::PARAM_INT);
+                $stmt->bindParam(':status', $status, PDO::PARAM_INT);
+                $stmt->bindParam(':fecha_reporte', $fecha_reporte, PDO::PARAM_STR);
+                $stmt->bindParam(':problema', $problema, PDO::PARAM_STR);
+        
+                $stmt->execute();
+        
+                // Si la ejecución es exitosa
+                http_response_code(201);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'message' => 'CORRECTO',
+                    'status' => 'B4C5'
+                ]);
+            } catch (PDOException $e) {
+                // Si ocurre un error, capturarlo y mostrarlo
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'message' => 'ERROR',
+                    'status' => 'D204',
+                    'error' => $e->getMessage() // Mostrar el mensaje del error
+                ]);
+            }
+        }
     
     }
 ?>
