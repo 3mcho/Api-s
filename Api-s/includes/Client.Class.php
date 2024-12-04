@@ -266,6 +266,73 @@
                 return "A102";
             }
         }
+
+        /* 
+        ------------------FUNCION PARA LEVANTAR TICKET-----------------------------------
+        */
+        public static function lev_ticket($folio,$fk_contrato,$status,$fecha_reporte,$problema){
+            try {
+                $database = new Database();
+                $conn = $database->getConnection();
+        
+                $stmt = $conn->prepare('INSERT INTO tickets (folio, fk_contrato, status, fecha_reporte, problema) 
+                                        VALUES (:folio, :fk_contrato, :status, :fecha_reporte, :problema)');
+        
+                $stmt->bindParam(':folio', $folio, PDO::PARAM_STR);
+                $stmt->bindParam(':fk_contrato', $fk_contrato, PDO::PARAM_INT);
+                $stmt->bindParam(':status', $status, PDO::PARAM_INT);
+                $stmt->bindParam(':fecha_reporte', $fecha_reporte, PDO::PARAM_STR);
+                $stmt->bindParam(':problema', $problema, PDO::PARAM_STR);
+        
+                $stmt->execute();
+        
+                // Si la ejecución es exitosa
+                http_response_code(201);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'message' => 'CORRECTO',
+                    'status' => 'B4C5'
+                ]);
+            } catch (PDOException $e) {
+                // Si ocurre un error, capturarlo y mostrarlo
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'message' => 'ERROR',
+                    'status' => 'D204',
+                    'error' => $e->getMessage() // Mostrar el mensaje del error
+                ]);
+            }
+        }
+
+        /*
+        ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL ID DEL CONTRATO-----------------------------------
+        */
+        public static function consultar_contratos_por_idcontrato($id_contrato) {
+            $database = new Database();
+            $conn = $database->getConnection();
+        
+            try {
+                // Consulta adaptada a la nueva base de datos
+                $sql = "
+                    SELECT * FROM contratos WHERE id_contrato= :id_contrato ; ";
+        
+                // Preparar y ejecutar la consulta
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':id_contrato', $id_contrato, PDO::PARAM_INT);
+                $stmt->execute();
+        
+                // Recuperar los resultados
+                $contratos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                // Retornar los resultados o false si no hay contratos
+                return $contratos ?: false;
+        
+            } catch (PDOException $e) {
+                // Manejo de errores en caso de problemas con la consulta
+                throw new Exception("Error al consultar los contratos: " . $e->getMessage());
+            }
+        }
     
     }
 ?>
