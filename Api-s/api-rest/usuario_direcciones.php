@@ -20,7 +20,7 @@
             echo json_encode($result);
         } else {
             // Si no se encuentran direcciones, respondemos con un mensaje de error
-            echo json_encode(array('message' => 'No se encontraron direcciones para el cliente especificado.'));
+            echo json_encode(['message' => 'Error', 'status' => 'A102']);
         }
     } else {
         // Si no se recibe el parámetro fk_cliente, mostramos un mensaje de error

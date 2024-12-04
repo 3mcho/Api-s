@@ -3,7 +3,9 @@
 
 
     class Client{
-       
+       /*
+        ------------------FUNCION PARA VERIFICAR SI EL USUARIO EXISTE----------------------------------
+        */
         public static function usuario_existe($correo_electronico) {
             $database = new Database();
             $conn = $database->getConnection();
@@ -32,14 +34,17 @@
             }
         }
         
-        public static function usuario_direcciones($clientId) {
+        /*
+        ------------------FUNCION PARA OBTENER EL LAS DIRECCIONES MEDIANTE EL ID DEL CLIENTE----------------------------------
+        */
+        public static function usuario_direcciones($id_cliente) {
             $database = new Database();
             $conn = $database->getConnection();
         
             // Consulta para obtener todas las direcciones asociadas al cliente
             $query = "SELECT * FROM direcciones WHERE fk_cliente = :clientId";
             $stmt = $conn->prepare($query);
-            $stmt->bindParam(':clientId', $clientId, PDO::PARAM_INT);
+            $stmt->bindParam(':clientId', $id_cliente, PDO::PARAM_INT);
             $stmt->execute();
         
             // Obtener todas las direcciones asociadas
@@ -47,6 +52,10 @@
         
             // Verificar si se encontraron direcciones
             if ($addresses) {
+                // Eliminar el campo 'fk_cliente' de cada dirección
+                foreach ($addresses as &$address) {
+                    unset($address['fk_cliente']);
+                }
                 return $addresses;
             } else {
                 return null; // Si no hay direcciones para este cliente
@@ -95,7 +104,6 @@
         /*
         ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL ID-----------------------------------
         */
-        // Función para consultar los contratos de un cliente por su ID
         public static function consultar_contratos_por_id($id_cliente) {
             $database = new Database();
             $conn = $database->getConnection();
@@ -185,7 +193,9 @@
             }
         }
 
-        //Validacion de cliente en la tabla Clientes
+        /* 
+        ------------------FUNCION PARA VALIDAR EL CLIENTE-----------------------------------
+        */
         public static function client_validation_in_clientes($id_cliente, $email)
         {
             $database = new Database();

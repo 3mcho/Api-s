@@ -1,26 +1,27 @@
+
 <?php
 require_once('../includes/Client.Class.php');
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id_cliente'])) {
-    $id_cliente = $_GET['id_cliente'];
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id_categoria'])) {
+    $id_categoria = $_GET['id_categoria'];
 
     try {
         
-        $contratos_data = Client::consultar_contratos_por_id($id_cliente);
+        $faq_data = Client::consultar_faq_por_categoria($id_categoria);
 
-        if ($contratos_data) {
+        if ($faq_data) {
             
             echo json_encode([
                 'status' => 'E001', 
-                'data' => $contratos_data
+                'data' => $faq_data
             ]);
         } else {
             
             echo json_encode([
                 'status' => 'A102', 
-                'message' => 'No se encontraron contratos para el cliente con ID ' . $id_cliente
+                'message' => 'No se encontraron preguntas frecuentes para la categoría con ID ' . $id_categoria
             ]);
         }
     } catch (Exception $e) {
@@ -31,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id_cliente'])) {
         ]);
     }
 } else {
-    /
+    
     echo json_encode([
         'status' => 'A400', 
-        'message' => 'Falta el parámetro "id_cliente" o método HTTP incorrecto.'
+        'message' => 'Falta el parámetro "id_categoria" o método HTTP incorrecto.'
     ]);
 }
 ?>
