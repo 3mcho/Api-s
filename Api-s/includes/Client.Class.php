@@ -304,6 +304,35 @@
                 ]);
             }
         }
+
+        /*
+        ------------------FUNCION PARA OBTENER EL LOS CONTRATOS LIGADOS AL CLIENTE POR MEDIO DEL ID DEL CONTRATO-----------------------------------
+        */
+        public static function consultar_contratos_por_idcontrato($id_contrato) {
+            $database = new Database();
+            $conn = $database->getConnection();
+        
+            try {
+                // Consulta adaptada a la nueva base de datos
+                $sql = "
+                    SELECT * FROM contratos WHERE id_contrato= :id_contrato ; ";
+        
+                // Preparar y ejecutar la consulta
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':id_contrato', $id_contrato, PDO::PARAM_INT);
+                $stmt->execute();
+        
+                // Recuperar los resultados
+                $contratos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                // Retornar los resultados o false si no hay contratos
+                return $contratos ?: false;
+        
+            } catch (PDOException $e) {
+                // Manejo de errores en caso de problemas con la consulta
+                throw new Exception("Error al consultar los contratos: " . $e->getMessage());
+            }
+        }
     
     }
 ?>
