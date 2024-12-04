@@ -257,40 +257,6 @@
             }
         }
         
-        /* 
-        ------------------FUNCION PARA CONSUSLTAR LAS PREGUNTAS FRECUENTES POR CATEGORIA POR MEDIO DEL ID_CATEGORIA-----------------------------------
-        */
-        public static function consultar_faq_por_categoria($id_categoria) {
-            $database = new Database();
-            $conn = $database->getConnection();
-    
-            try {
-                
-                $sql = "
-                    SELECT 
-                        id_pregunta,
-                        pregunta,
-                        respuesta_pregunta
-                    FROM faq_preguntas
-                    WHERE fk_categoria = :id_categoria;
-                ";
-    
-                
-                $stmt = $conn->prepare($sql);
-                $stmt->bindParam(':id_categoria', $id_categoria, PDO::PARAM_INT);
-                $stmt->execute();
-    
-                
-                $faq = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-               
-                return $faq ?: false;
-    
-            } catch (PDOException $e) {
-                
-                throw new Exception("Error al consultar las preguntas frecuentes: " . $e->getMessage());
-            }
-        }
     
     }
 ?>
